@@ -72,6 +72,7 @@ const int lowThreshold = 29;
 // Function prototypes
 void displayError(const char *errorMessage);
 void displayData(float temperature, int sensorValue);
+void spinIt();
 
 void setup() {
   // Set the baud rate for the Serial port
