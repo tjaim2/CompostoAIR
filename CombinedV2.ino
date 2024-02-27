@@ -59,6 +59,25 @@ int motorSpeed = 255;   /* [0 - 255] [off - fullspeed] */
 int spinTime = 2000;    /*  time Motor is spinning (in milliseconds) */
 int timeBetweenSpins = 1000;    /* Time off between consecutive spins in same spin cycle (in milliseconds) */
 
+void IRAM_ATTR isr() {
+  button1.numberKeyPresses++;
+  button1.pressed = true;
+}
+
+struct Button {
+  const uint8_t PIN;
+  uint32_t numberKeyPresses;
+  bool pressed;
+};
+
+Button button1 = {spinButton, 0, false};
+
+void IRAM_ATTR isr() {
+  button1.numberKeyPresses++;
+  button1.pressed = true;
+}
+
+
 
 // Function prototypes
 void displayError(const char *errorMessage);
@@ -79,6 +98,11 @@ void setup() {
   pinMode(motorPin1, OUTPUT);     /* MotorPins Adjust Direction */
   pinMode(motorPin2, OUTPUT);
   pinMode(enablePin, OUTPUT);     /* Speed Adjustment */
+//  pinMode(spinButton, INPUT_PULLUP);
+
+  pinMode(button1.PIN, INPUT_PULLUP);
+  attachInterrupt(button1.PIN, isr, FALLING);
+
 
   /* Configure wakeup timer and wakeup on button press */
 //  esp_sleep_enable_timer_wakeup(time_in_us);
@@ -111,7 +135,14 @@ void loop() {
   }
 
   delay(5000);
-  //esp_deep_sleep_start();
+  while (spinButton = HIGH){
+    
+  }
+  if (button1.pressed) {
+    Serial.printf("Button has been pressed %u times\n", button1.numberKeyPresses);
+    button1.pressed = false;
+    spinIt();
+  }
   spinIt();
 }
 
