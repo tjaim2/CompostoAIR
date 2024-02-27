@@ -66,23 +66,23 @@ void displayData(float temperature, int sensorValue, byte val1, byte val2, byte 
 void spinIt();
 
 void setup() {
-  Serial.begin(9600);
-  tft.init();
-  tft.setRotation(1);
-  sensors.begin();
-  mod.begin(9600);
   pinMode(RE, OUTPUT);
   pinMode(DE, OUTPUT);
   delay(500);
   
   /* Configure Pins for motor control */
+  Serial.begin(9600);
+  tft.init();
+  tft.setRotation(1);
+  sensors.begin();
+  mod.begin(9600);
   pinMode(motorPin1, OUTPUT);     /* MotorPins Adjust Direction */
   pinMode(motorPin2, OUTPUT);
   pinMode(enablePin, OUTPUT);     /* Speed Adjustment */
 
   /* Configure wakeup timer and wakeup on button press */
-  esp_sleep_enable_timer_wakeup(time_in_us);
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_13, 0);
+//  esp_sleep_enable_timer_wakeup(time_in_us);
+//  esp_sleep_enable_ext0_wakeup(GPIO_NUM_13, 0);
   
 }
 
@@ -111,7 +111,7 @@ void loop() {
   }
 
   delay(5000);
-  esp_deep_sleep_start();
+  //esp_deep_sleep_start();
 
 }
 
