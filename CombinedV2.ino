@@ -112,7 +112,7 @@ void loop() {
 
   delay(5000);
   //esp_deep_sleep_start();
-
+  spinIt();
 }
 
 void displayData(float temperature, int sensorValue, byte val1, byte val2, byte val3) {
