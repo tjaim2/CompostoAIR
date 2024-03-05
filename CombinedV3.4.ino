@@ -14,10 +14,10 @@
 #define NOP __asm__ __volatile__ ("nop\n\t")
 
 // Pin definitions
-#define temperature_sensor_pin 34
-#define soil_moisture_pin 35
+#define temperature_sensor_pin 14
+#define soil_moisture_pin 12
 #define RE 25
-#define DE 33
+#define DE 26
 #define enablePin 13
 #define motorPin1 12
 #define motorPin2 14
@@ -26,6 +26,11 @@
 // OneWire and DallasTemperature setup for temperature sensor
 OneWire oneWire(temperature_sensor_pin);
 DallasTemperature sensors(&oneWire);
+
+// Function prototypes
+void displayError(const char *errorMessage);
+void displayData(float temperature, int sensorValue, byte val1, byte val2, byte val3);
+void spinIt();
 
 // TFT_eSPI setup for TFT display
 TFT_eSPI tft = TFT_eSPI();
@@ -64,7 +69,7 @@ const unsigned long spinTime = 2000;    /*  time Motor is spinning (in milliseco
 const unsigned long stopTime = 1000;    /* Time off between consecutive spins in same spin cycle (in milliseconds) */
 const unsigned long clockAdjustment = 2; /* Ignore this: Used in SpinIt() function, minor adjustment to motor timing to compensate for instruction cycle limitations */
 
-/* General structs for buttons */
+/* General structs for button */
 struct Button {
   const int PIN;
   unsigned long timeLastPressed;
@@ -77,11 +82,6 @@ Button turnButton = {spinButton, 0, false};
 /* Debouncing */
 unsigned long debounceDelay = 75;    // debounce time in ms
 
-// Function prototypes
-void displayError(const char *errorMessage);
-void displayData(float temperature, int sensorValue, byte val1, byte val2, byte val3);
-void spinIt();
-
 void IRAM_ATTR isr() {
     unsigned long timePressed = millis();
     if (((timePressed - turnButton.timeLastPressed) > debounceDelay) && (turnButton.pressed == false)) {
@@ -91,14 +91,14 @@ void IRAM_ATTR isr() {
 }
 
 void setup() {
-  pinMode(RE, OUTPUT);
-  pinMode(DE, OUTPUT);
-  NOP;     //delay(500);             
   Serial.begin(9600);
   tft.init();
   tft.setRotation(1);
   sensors.begin();
   mod.begin(9600);
+  pinMode(RE, OUTPUT);
+  pinMode(DE, OUTPUT);
+  NOP;     //delay(500);
   
   /* Configure Pins for motor control */
   pinMode(motorPin1, OUTPUT);     /* MotorPins Adjust Direction */
@@ -118,7 +118,7 @@ void loop() {
     turnButton.pressed = false;
   }
   
-  // Temperature Reading
+    // Temperature Reading
   sensors.requestTemperatures();
   float temperatureC = sensors.getTempCByIndex(0);
 
@@ -128,11 +128,11 @@ void loop() {
   // NPK Readings
   byte val1, val2, val3;
   val1 = nitrogen();
-  NOP;         //delay(250);
+  NOP;    //delay(250);
   val2 = phosphorous();
-  NOP;         //delay(250);
+  NOP;    //delay(250);
   val3 = potassium();
-  NOP;         //delay(250);
+  NOP;    //delay(250);
 
   // Display data or error message
   if (temperatureC != DEVICE_DISCONNECTED_C && sensorValue >= moistureMin && sensorValue <= moistureMax) {
@@ -141,7 +141,7 @@ void loop() {
     displayError("Error reading data!");
   }
 
-  //delay(5000);
+  delay(2000);
 
 }
 
