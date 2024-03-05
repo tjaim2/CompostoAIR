@@ -268,7 +268,7 @@ byte nitrogen() {
 byte phosphorous() {
   digitalWrite(DE, HIGH);
   digitalWrite(RE, HIGH);
-  NOP;
+  delay(10);
   if (mod.write(phos, sizeof(phos)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
@@ -283,7 +283,7 @@ byte phosphorous() {
 byte potassium() {
   digitalWrite(DE, HIGH);
   digitalWrite(RE, HIGH);
-  NOP;
+  delay(10);
   if (mod.write(pota, sizeof(pota)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
@@ -344,6 +344,5 @@ void spinIt(){
     refTime = millis() - startTime + clockAdjustment;
   }
   
-  /* Update status flag , spin cycle done */
-//  turnButton.spinning = false;
+  analogWrite(enablePin, 0);
   }
