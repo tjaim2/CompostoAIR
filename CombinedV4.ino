@@ -58,10 +58,10 @@ byte values[11];
 SoftwareSerial mod(32, 33);
 
 // Define variables to be used for sleep
-#define sleep_time  5        /* ESP32 will go to sleep for this long. Specify units by multiplying by the desired "us_from_XXXX" when defining "time_in_us" below (Ex: if you want units to be seconds, multiply sleep_time * us_from seconds) */
 #define us_from_seconds 1000000  /*micro seconds to seconds */
 #define us_from_mins 60000000  /* seconds to minutes*/
 #define us_from_hours 3600000000    /*us to hours*/
+#define sleep_time  5        /* ESP32 will go to sleep for this long. Specify units by multiplying by the desired "us_from_XXXX" when defining "time_in_us" below (Ex: if you want units to be seconds, multiply sleep_time * us_from seconds) */
 unsigned long time_in_us = sleep_time * us_from_seconds;  /* use for esp_deep_sleep function */
 unsigned long timeUntilSleep = 10000; /* How long without an input until system goes to sleep (in ms) */
 unsigned long autoSpinTime = 100000; /* How long between automatic turns (in ms) */
