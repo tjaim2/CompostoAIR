@@ -64,7 +64,7 @@ SoftwareSerial mod(32, 33);
 #define us_from_mins 60000000  /* seconds to minutes*/
 #define us_from_hours 3600000000    /*us to hours*/
 unsigned long time_in_us = sleep_time * us_from_seconds;  /* use for esp_deep_sleep function */
-unsigned long timeUntilSleep = 10000; /* How long without an input until system goes to sleep (in ms) */
+unsigned long timeUntilSleep = 15000; /* How long without an input until system goes to sleep (in ms) */
 unsigned long autoSpinTime = 100000; /* How long between automatic turns (in ms) */
 unsigned long lastInput;              /* Tracks when the last user input was */
 unsigned long setUpTime;
