@@ -12,8 +12,6 @@
 
 /* More efficient delay*/
 #define NOP __asm__ __volatile__ ("nop\n\t")
-unsigned long startTime;
-unsigned long refTime;
 
 // Pin definitions
 #define temperature_sensor_pin 14
@@ -33,6 +31,7 @@ DallasTemperature sensors(&oneWire);
 void displayError(const char *errorMessage);
 void displayData(float temperature, int sensorValue, byte val1, byte val2, byte val3);
 void spinIt();
+void yonDelay();
 
 // TFT_eSPI setup for TFT display
 TFT_eSPI tft = TFT_eSPI();
@@ -64,11 +63,13 @@ SoftwareSerial mod(32, 33);
 #define us_from_mins 60000000  /* seconds to minutes*/
 #define us_from_hours 3600000000    /*us to hours*/
 unsigned long time_in_us = sleep_time * us_from_seconds;  /* use for esp_deep_sleep function */
-unsigned long timeUntilSleep = 15000; /* How long without an input until system goes to sleep (in ms) */
+unsigned long timeUntilSleep = 10000; /* How long without an input until system goes to sleep (in ms) */
 unsigned long autoSpinTime = 100000; /* How long between automatic turns (in ms) */
-unsigned long lastInput;              /* Tracks when the last user input was */
-unsigned long setUpTime;
-unsigned long loopTime;
+unsigned long lastInput;              /* Tracks when the last user input was (in ms)*/
+unsigned long setUpTime;              /* Tracks time setup function (in ms)*/
+unsigned long loopTime;               /* Tracks how long each loop is (in ms) */
+unsigned long refTime;                /* General use time indexing variable (in ms) */
+unsigned long startTime;              /* Time indexing variable (in ms) */
 RTC_DATA_ATTR unsigned long testTime;
 RTC_DATA_ATTR unsigned long lastSpin = 0;
 RTC_DATA_ATTR unsigned long rebootCount = 0;
@@ -100,6 +101,8 @@ void IRAM_ATTR isr() {
       turnButton.pressed = true;
       turnButton.timeLastPressed = timePressed;
       lastInput = millis();
+      lastSpin = lastInput;
+      spun = true;
     }
 }
 
@@ -190,7 +193,7 @@ void loop() {
   loopTime = millis() - loopTime;
   lastSpin = lastSpin + loopTime;
   
-  if ((lastSpin ) >= autoSpinTime){
+  if ((lastSpin) >= autoSpinTime){
     spinIt();
     lastSpin = millis();
     spun = true;
@@ -203,7 +206,7 @@ void loop() {
   Serial.println(loopTime);
   Serial.flush();
   Serial.begin(9600);
-  if ( (millis() - lastInput) >= timeUntilSleep){
+  if ((millis() - lastInput) >= timeUntilSleep){
       if(spun){
         lastSpin = millis() - lastSpin;
         spun = false;
@@ -427,12 +430,12 @@ void spinIt(){
   analogWrite(enablePin, motorSpeed);
 
   /* reference time for delay implementation */
-  unsigned long startTime = millis(); 
+  startTime = millis(); 
 
   /* Spin one direction */
   digitalWrite(motorPin1, HIGH);
   digitalWrite(motorPin2, LOW);
-  unsigned long refTime = millis() - startTime + clockAdjustment;  
+  refTime = millis() - startTime + clockAdjustment;  
   while(refTime <= spinTime){
     refTime = millis() - startTime + clockAdjustment;
     //Serial.print("refTime: "); Serial.println(refTime);
