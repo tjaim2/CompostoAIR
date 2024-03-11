@@ -189,6 +189,32 @@ void loop() {
   } else {
     displayError("Error reading data!");
   }
+
+  if (sensorValue < sensorMin || sensorValue > sensorMax) {
+    Serial.print("Error: Sensor value (");
+    Serial.print(sensorValue);
+    Serial.print(") is out of expected range (");
+    Serial.print(sensorMin);
+    Serial.print(" - ");
+    Serial.print(sensorMax);
+    Serial.println(")!");
+    return;     // Skip the rest of the loop
+  }
+
+  int percentage = map(sensorValue, dry, wet, 0, 100);
+
+  Serial.print("Soil Moisture Reading: ");
+  Serial.print(sensorValue);
+  Serial.print("  Percentage: ");
+  Serial.print(percentage);
+  Serial.print("%");
+
+  if (percentage <= dryThreshold) {
+    Serial.println("  Status: Dry");
+  } else {
+    Serial.println("  Status: Wet");
+  }
+
   yonDelay(2000);    //  delay(2000);
 
   loopTime = millis() - loopTime;
