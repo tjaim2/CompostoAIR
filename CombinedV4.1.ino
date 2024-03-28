@@ -14,14 +14,14 @@
 #define NOP __asm__ __volatile__ ("nop\n\t")
 
 // Pin definitions
-#define temperature_sensor_pin 22
-#define soil_moisture_pin 35
+#define temperature_sensor_pin 14
+#define soil_moisture_pin 12
 #define RE 25
-#define DE 33
-#define enablePin 27
-#define motorPin1 14
-#define motorPin2 12
-#define spinButton 13
+#define DE 26
+#define enablePin 27 //13
+#define motorPin1 21 //12
+#define motorPin2 22 //14
+#define spinButton 13 //27
 
 // OneWire and DallasTemperature setup for temperature sensor
 OneWire oneWire(temperature_sensor_pin);
@@ -190,24 +190,7 @@ void loop() {
     displayError("Error reading data!");
   }
 
-  if (sensorValue < sensorMin || sensorValue > sensorMax) {
-    Serial.print("Error: Sensor value (");
-    Serial.print(sensorValue);
-    Serial.print(") is out of expected range (");
-    Serial.print(sensorMin);
-    Serial.print(" - ");
-    Serial.print(sensorMax);
-    Serial.println(")!");
-    return;     // Skip the rest of the loop
-  }
-
   int percentage = map(sensorValue, dry, wet, 0, 100);
-
-  Serial.print("Soil Moisture Reading: ");
-  Serial.print(sensorValue);
-  Serial.print("  Percentage: ");
-  Serial.print(percentage);
-  Serial.print("%");
 
   if (percentage <= dryThreshold) {
     Serial.println("  Status: Dry");
@@ -227,12 +210,7 @@ void loop() {
   }
 
   testTime = millis() - testTime;
-  /*Serial.begin(115200);
-  delay(2);
-  Serial.print("loopTime:");
-  Serial.println(loopTime);
-  Serial.flush();
-  Serial.begin(9600);*/
+  
   if ((millis() - lastInput) >= timeUntilSleep){
       if(spun){
         lastSpin = millis() - lastSpin;
