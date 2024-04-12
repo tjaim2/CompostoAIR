@@ -17,7 +17,7 @@
 #define motorPin1 14 //12
 #define motorPin2 12 //14
 #define spinButton 13 //27
-//#define resetPin 4
+#define resetPin 4
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -247,8 +247,8 @@ void setup() {
   lastInput = millis();
 
   /* Initiate Display */
-  //pinMode(resetPin, OUTPUT);
-  //digitalWrite(resetPin, HIGH);
+  pinMode(resetPin, OUTPUT);
+  digitalWrite(resetPin, HIGH);
   Serial.begin(9600);
   tft.init();
   tft.setRotation(1);
@@ -317,7 +317,7 @@ void loop() {
   
 /* Go to Sleep*/
   if ((millis() - lastInput) >= timeUntilSleep){
-      //digitalWrite(resetPin, LOW);
+      digitalWrite(resetPin, LOW);
       if(spun){
         lastSpin = millis() - lastSpin;
         spun = false;
